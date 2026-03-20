@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0"
+    />
+    <title>Admin Panel 🔐 | Save4Save</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="blobs">
+      <div class="bl bl1"></div>
+      <div class="bl bl2"></div>
+      <div class="bl bl3"></div>
+    </div>
+    <div class="login-screen" id="loginScreen">
+      <div class="login-card">
+        <div style="font-size: 3rem; text-align: center; margin-bottom: 10px">
+          🔐
+        </div>
+        <h2 class="login-h">Admin <span class="g">Panel</span></h2>
+        <p class="login-sub">Restricted zone — authorized only, fam. 😤</p>
+        <div class="fg" style="margin-bottom: 14px">
+          <label class="fl">🗝️ Admin Password</label>
+          <div class="eye-wrap">
+            <input
+              type="password"
+              id="loginPass"
+              class="fi"
+              placeholder="Enter password..."
+              onkeydown="if (event.key === 'Enter') doLogin();"
+            />
+            <button class="eye-btn" onclick="toggleEye('loginPass', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="login-err hidden" id="loginErr">
+          ❌ Wrong password bestie. Try again! 😂
+        </div>
+        <button class="btn-giant" onclick="doLogin()">
+          <i class="fas fa-unlock"></i> Log In
+        </button>
+        <a
+          href="index.html"
+          style="
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 0.84rem;
+          "
+          >← Back to Home</a
+        >
+      </div>
+    </div>
+    <div class="admin-dash hidden" id="adminDash">
+      <nav class="navbar">
+        <a href="index.html" class="brand"
+          ><span>🛡️</span>Admin <span class="g">Panel</span></a
+        >
+        <div class="navlinks" id="navLinks">
+          <a href="index.html" class="nl">🏠 Home</a>
+          <button class="nl admin-pill" onclick="doLogout()">🚪 Logout</button>
+        </div>
+        <button class="ham" onclick="toggleNav()">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+      <div class="admin-stats">
+        <div class="astat">
+          <i class="fas fa-users"></i><span id="statContacts">0</span
+          ><label>Contacts</label>
+        </div>
+        <div class="astat">
+          <i class="fab fa-whatsapp"></i><span id="statWA">0</span
+          ><label>WA Numbers</label>
+        </div>
+        <div class="astat">
+          <i class="fas fa-images"></i><span id="statPhotos">0</span
+          ><label>Photos</label>
+        </div>
+        <div class="astat">
+          <i class="fas fa-calendar-day"></i><span id="statDate"></span
+          ><label>Today</label>
+        </div>
+      </div>
+      <div class="admin-nav-tabs">
+        <button class="adtab active" onclick="switchAdminTab('contacts', this)">
+          📋 Contacts
+        </button>
+        <button class="adtab" onclick="switchAdminTab('profile', this)">
+          👤 Profile
+        </button>
+        <button class="adtab" onclick="switchAdminTab('addphoto', this)">
+          📸 Add Photos
+        </button>
+        <button class="adtab" onclick="switchAdminTab('security', this)">
+          🔑 Security
+        </button>
+      </div>
+      <!-- CONTACTS TAB -->
+      <div class="admin-tab-panel" id="adt-contacts">
+        <div class="contacts-toolbar">
+          <div>
+            <h2
+              style="
+                font-family: var(--ff-display);
+                font-size: 1.7rem;
+                margin-bottom: 4px;
+              "
+            >
+              All Contacts 📋
+            </h2>
+            <p style="color: var(--muted); font-size: 0.84rem">
+              Everyone who saved their contact on Save4Save
+            </p>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <div class="search-wrap" style="flex: 1; min-width: 200px">
+              <i class="fas fa-search si"></i>
+              <input
+                type="text"
+                id="srch"
+                class="search-inp"
+                placeholder="Search name or number..."
+                oninput="filterContacts()"
+              />
+            </div>
+            <button class="btn-primary" onclick="dlAllVCF()">
+              <i class="fas fa-download"></i> Download All VCF
+            </button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="ctable">
+            <thead>
+              <tr>
+                <th>📸</th>
+                <th>Name</th>
+                <th>WhatsApp</th>
+                <th>Institution</th>
+                <th>Course</th>
+                <th>Year</th>
+                <th>Saved</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ctbody"></tbody>
+          </table>
+          <div class="empty-st hidden" id="emptyTbl">
+            <div style="font-size: 2.5rem">😅</div>
+            <p>No contacts yet! Tell people to save their contacts. 😂</p>
+          </div>
+        </div>
+      </div>
+      <!-- PROFILE TAB -->
+      <div class="admin-tab-panel hidden" id="adt-profile">
+        <h2
+          style="
+            font-family: var(--ff-display);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+          "
+        >
+          Edit My Profile 👤
+        </h2>
+        <p style="color: var(--muted); margin-bottom: 22px; font-size: 0.87rem">
+          This shows on the About Me page for everyone. Make it bussin! 🔥
+        </p>
+        <div class="form-card">
+          <div
+            class="upload-zone"
+            id="profileUpZone"
+            onclick="document.getElementById('profilePicInput').click()"
+          >
+            <div id="profileUpPH">
+              <div style="font-size: 2.2rem">📸</div>
+              <div class="uz-title">Upload Profile Photo</div>
+              <div class="uz-hint">This shows on About Me page</div>
+            </div>
+            <img id="profilePicPreview" class="pic-prev hidden" alt="" />
+            <input
+              type="file"
+              id="profilePicInput"
+              accept="image/*"
+              style="display: none"
+              onchange="handleProfilePic(event)"
+            />
+          </div>
+          <div class="fgrid">
+            <div class="fg">
+              <label class="fl">👑 Display Name</label
+              ><input
+                type="text"
+                id="adminName"
+                class="fi"
+                placeholder="Your name..."
+              />
+            </div>
+            <div class="fg">
+              <label class="fl">📚 Course</label
+              ><input
+                type="text"
+                id="adminCourse"
+                class="fi"
+                placeholder="e.g. BSc IT..."
+              />
+            </div>
+            <div class="fg">
+              <label class="fl">📅 Year</label>
+              <select id="adminYear" class="fi">
+                <option value="">Select...</option>
+                <option>Year 1</option>
+                <option>Year 2</option>
+                <option>Year 3</option>
+                <option>Year 4</option>
+                <option>Year 5+</option>
+                <option>Alumni</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">🏛️ Institution</label
+              ><input
+                type="text"
+                id="adminInst"
+                class="fi"
+                value="Karatina University"
+              />
+            </div>
+            <div class="fg full">
+              <label class="fl">💬 Bio</label
+              ><textarea
+                id="adminBio"
+                class="fi"
+                rows="4"
+                placeholder="Tell the squad about yourself..."
+              ></textarea>
+            </div>
+          </div>
+          <button
+            class="btn-giant green-giant"
+            onclick="saveAdminProfile()"
+            style="margin-top: 16px"
+          >
+            <i class="fas fa-save"></i> Save Profile
+          </button>
+        </div>
+        <h3
+          style="
+            margin-top: 32px;
+            font-family: var(--ff-display);
+            font-size: 1.4rem;
+          "
+        >
+          Edit Experience 💼
+        </h3>
+        <div id="expEditor" style="margin-top: 14px"></div>
+        <button
+          class="btn-primary"
+          style="margin-top: 10px"
+          onclick="addExpEntry()"
+        >
+          <i class="fas fa-plus"></i> Add Experience
+        </button>
+        <h3
+          style="
+            margin-top: 28px;
+            font-family: var(--ff-display);
+            font-size: 1.4rem;
+          "
+        >
+          Edit Skills 💪
+        </h3>
+        <div class="fgrid" style="margin-top: 12px">
+          <div class="fg">
+            <label class="fl">Skill Name</label
+            ><input
+              type="text"
+              id="newSkillName"
+              class="fi"
+              placeholder="e.g. Python..."
+            />
+          </div>
+          <div class="fg">
+            <label class="fl">Level (1-100)</label
+            ><input
+              type="number"
+              id="newSkillLevel"
+              class="fi"
+              min="1"
+              max="100"
+              placeholder="80"
+            />
+          </div>
+        </div>
+        <button
+          class="btn-sm-green"
+          style="margin-top: 10px"
+          onclick="addSkill()"
+        >
+          <i class="fas fa-plus"></i> Add Skill
+        </button>
+        <div
+          id="skillsEditor"
+          style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px"
+        ></div>
+      </div>
+      <!-- ADD PHOTOS TAB -->
+      <div class="admin-tab-panel hidden" id="adt-addphoto">
+        <h2
+          style="
+            font-family: var(--ff-display);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+          "
+        >
+          Add Campus Photos 📸
+        </h2>
+        <p style="color: var(--muted); margin-bottom: 22px; font-size: 0.87rem">
+          Upload photos for Campus Vibes & About Me gallery. Kenya is beautiful
+          — show it off! 🇰🇪
+        </p>
+        <div class="form-card">
+          <div
+            class="upload-zone"
+            id="photoUpZone"
+            onclick="document.getElementById('photoFileInput').click()"
+          >
+            <div id="photoUpPH">
+              <div style="font-size: 2.5rem">🖼️</div>
+              <div class="uz-title">Upload Photo</div>
+              <div class="uz-hint">JPEG, PNG — max 5MB</div>
+            </div>
+            <img id="photoUpPreview" class="pic-prev hidden" alt="" />
+            <input
+              type="file"
+              id="photoFileInput"
+              accept="image/*"
+              style="display: none"
+              onchange="handlePhotoUpload(event)"
+            />
+          </div>
+          <div class="fgrid">
+            <div class="fg">
+              <label class="fl">🏛️ Institution / Location</label
+              ><input
+                type="text"
+                id="photoInst"
+                class="fi"
+                placeholder="e.g. Karatina University..."
+              />
+            </div>
+            <div class="fg">
+              <label class="fl">📝 Caption</label
+              ><input
+                type="text"
+                id="photoCaption"
+                class="fi"
+                placeholder="Say something about this pic..."
+              />
+            </div>
+            <div class="fg">
+              <label class="fl">🏷️ Category</label>
+              <select id="photoCat" class="fi">
+                <option value="university">🎓 University</option>
+                <option value="kmtc">🏥 KMTC</option>
+                <option value="college">🏫 College</option>
+                <option value="moments">✨ Moments</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">📌 Add To</label>
+              <select id="photoTarget" class="fi">
+                <option value="campus">Campus Vibes Page</option>
+                <option value="about">My Gallery (About Me)</option>
+                <option value="both">Both Pages</option>
+              </select>
+            </div>
+          </div>
+          <button
+            class="btn-giant green-giant"
+            onclick="uploadPhoto()"
+            style="margin-top: 16px"
+          >
+            <i class="fas fa-cloud-upload-alt"></i> Upload Photo
+          </button>
+        </div>
+        <h3
+          style="
+            margin-top: 32px;
+            font-family: var(--ff-display);
+            font-size: 1.4rem;
+          "
+        >
+          All Photos
+        </h3>
+        <div class="admin-photo-grid" id="adminPhotoGrid">
+          <div class="empty-st" id="emptyPhotos" style="grid-column: 1/-1">
+            <div style="font-size: 2.5rem">🖼️</div>
+            <p>No photos uploaded yet!</p>
+          </div>
+        </div>
+      </div>
+      <!-- SECURITY TAB -->
+      <div class="admin-tab-panel hidden" id="adt-security">
+        <h2
+          style="
+            font-family: var(--ff-display);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+          "
+        >
+          Security 🔑
+        </h2>
+        <p style="color: var(--muted); margin-bottom: 22px; font-size: 0.87rem">
+          Change your admin password. Keep it locked in! 🛡️
+        </p>
+        <div class="form-card" style="max-width: 480px">
+          <h3
+            style="
+              margin-bottom: 16px;
+              font-family: var(--ff-display);
+              font-size: 1.3rem;
+            "
+          >
+            Change Password
+          </h3>
+          <div class="fg" style="margin-bottom: 12px">
+            <label class="fl">Current Password</label>
+            <div class="eye-wrap">
+              <input
+                type="password"
+                id="curPass"
+                class="fi"
+                placeholder="Current password..."
+              /><button class="eye-btn" onclick="toggleEye('curPass', this)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom: 12px">
+            <label class="fl">New Password</label>
+            <div class="eye-wrap">
+              <input
+                type="password"
+                id="newPass"
+                class="fi"
+                placeholder="New password (min 6 chars)..."
+              /><button class="eye-btn" onclick="toggleEye('newPass', this)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom: 16px">
+            <label class="fl">Confirm New Password</label>
+            <div class="eye-wrap">
+              <input
+                type="password"
+                id="confPass"
+                class="fi"
+                placeholder="Confirm new password..."
+              /><button class="eye-btn" onclick="toggleEye('confPass', this)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="pass-msg hidden" id="passMsg"></div>
+          <button class="btn-giant" onclick="changePass()">
+            <i class="fas fa-key"></i> Update Password
+          </button>
+        </div>
+        <div class="form-card" style="max-width: 480px; margin-top: 20px">
+          <h3
+            style="
+              margin-bottom: 14px;
+              font-family: var(--ff-display);
+              font-size: 1.3rem;
+            "
+          >
+            WhatsApp Group Link 💬
+          </h3>
+          <div class="link-display">
+            https://chat.whatsapp.com/Lku4EybnDOw4VTxQqYb6nT?mode=gi_t
+          </div>
+          <div
+            style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap"
+          >
+            <button class="btn-sm-green" onclick="copyGroupLink()">
+              <i class="fas fa-copy"></i> Copy Link
+            </button>
+            <a
+              href="https://chat.whatsapp.com/Lku4EybnDOw4VTxQqYb6nT?mode=gi_t"
+              target="_blank"
+              class="btn-primary"
+              ><i class="fab fa-whatsapp"></i> Open Group</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-bg hidden" id="delModal">
+      <div class="modal-box">
+        <div class="modal-emoji">⚠️</div>
+        <h3>You Sure About That?</h3>
+        <p>Deadass deleting this contact fr? Can't be undone bestie! 😤</p>
+        <div class="modal-btns">
+          <button class="btn-danger" id="delConfirmBtn">
+            <i class="fas fa-trash"></i> Yeah, Delete It
+          </button>
+          <button class="btn-ghost" onclick="closeM('delModal')">
+            Nah, Keep It 😅
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="toast hidden" id="toast"></div>
+    <script src="app.js"></script>
+  </body>
+</html>

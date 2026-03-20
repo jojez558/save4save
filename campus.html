@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>Campus Vibes 🎓 | Save4Save — Kenya Is Beautiful</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      /* ---- Campus page extras ---- */
+      .campus-hero-bg {
+        position: relative;
+        z-index: 1;
+        min-height: 420px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 60px 20px 50px;
+        overflow: hidden;
+      }
+      .campus-hero-bg::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            to bottom,
+            rgba(10, 10, 15, 0.3) 0%,
+            rgba(10, 10, 15, 0.7) 60%,
+            #0a0a0f 100%
+          ),
+          url("https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=1400&q=80")
+            center/cover no-repeat;
+        z-index: -1;
+      }
+      .campus-hero-bg .campus-hero-tag {
+        position: relative;
+        z-index: 2;
+      }
+      .campus-hero-bg .campus-hero-h {
+        position: relative;
+        z-index: 2;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
+      }
+      .campus-hero-bg .campus-hero-p {
+        position: relative;
+        z-index: 2;
+      }
+      .campus-hero-bg .campus-stats {
+        position: relative;
+        z-index: 2;
+      }
+
+      /* Masonry-ish grid for more visual interest */
+      .campus-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      @media (max-width: 900px) {
+        .campus-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 520px) {
+        .campus-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Featured card — first card bigger */
+      .cg-card.featured {
+        grid-column: span 2;
+      }
+      .cg-card.featured .cg-img-wrap {
+        height: 320px;
+      }
+      @media (max-width: 900px) {
+        .cg-card.featured {
+          grid-column: span 2;
+        }
+      }
+      @media (max-width: 520px) {
+        .cg-card.featured {
+          grid-column: span 1;
+        }
+        .cg-card.featured .cg-img-wrap {
+          height: 220px;
+        }
+      }
+
+      .cg-img-wrap {
+        height: 210px;
+        position: relative;
+      }
+
+      /* Kenya badge on default photos */
+      .kenya-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 50px;
+        letter-spacing: 0.5px;
+      }
+
+      /* Like count badge on image */
+      .like-overlay {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .like-overlay i {
+        color: #ef4444;
+      }
+
+      /* Skeleton loader */
+      .cg-skeleton {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        animation: skeletonPulse 1.4s ease-in-out infinite;
+      }
+      .cg-skeleton .sk-img {
+        height: 210px;
+        background: var(--bg3);
+      }
+      .cg-skeleton .sk-body {
+        padding: 16px;
+      }
+      .sk-line {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--bg3);
+        margin-bottom: 8px;
+      }
+      .sk-line.short {
+        width: 60%;
+      }
+      @keyframes skeletonPulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Stats bar */
+      .campus-stats {
+        display: flex;
+        justify-content: center;
+        gap: 0;
+        margin-top: 28px;
+        background: rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        overflow: hidden;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .cstat {
+        flex: 1;
+        padding: 14px 10px;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .cstat:last-child {
+        border-right: none;
+      }
+      .cstat span {
+        font-family: var(--ff-display);
+        font-size: 1.8rem;
+        color: var(--white);
+        display: block;
+      }
+      .cstat label {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.6);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="campus-page-bg"></div>
+    <div class="noise"></div>
+    <div class="blobs">
+      <div class="bl bl1"></div>
+      <div class="bl bl2"></div>
+      <div class="bl bl3"></div>
+    </div>
+
+    <nav class="navbar">
+      <a href="index.html" class="brand"
+        ><span>💾</span>Save<span class="g">4</span>Save</a
+      >
+      <div class="navlinks" id="navLinks">
+        <a href="index.html" class="nl">Save 💾</a>
+        <a href="about.html" class="nl">About Me 🧑‍🎓</a>
+        <a href="campus.html" class="nl active">Campus Vibes 🎓</a>
+        <a href="terms.html" class="nl">Terms 📜</a>
+        <a href="admin.html" class="nl admin-pill">Admin 🔐</a>
+      </div>
+      <button class="ham" onclick="toggleNav()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+
+    <!-- HERO with background image -->
+    <section class="campus-hero-bg">
+      <div class="campus-hero-tag">🇰🇪 Kenya Is Beautiful — No Cap</div>
+      <h1 class="campus-hero-h">
+        <span class="gtext">Campus</span> Vibes.<br /><span class="wtext"
+          >Kenya</span
+        >
+        Hits Different.
+      </h1>
+      <p class="campus-hero-p" style="max-width: 560px; margin: 0 auto 0">
+        From Mt. Kenya slopes to Lake Victoria shores — Kenyan campuses are
+        lowkey the most beautiful in Africa fr fr. 💚
+      </p>
+      <div class="campus-stats">
+        <div class="cstat">
+          <span id="totalPhotos">20</span><label>Photos</label>
+        </div>
+        <div class="cstat">
+          <span id="totalLikes">0</span><label>Likes</label>
+        </div>
+        <div class="cstat">
+          <span id="totalComments">0</span><label>Comments</label>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTERS -->
+    <div class="campus-filters">
+      <button class="cf-btn active" onclick="filterCampus('all', this)">
+        All 🇰🇪
+      </button>
+      <button class="cf-btn" onclick="filterCampus('university', this)">
+        Universities 🎓
+      </button>
+      <button class="cf-btn" onclick="filterCampus('kmtc', this)">
+        KMTC 🏥
+      </button>
+      <button class="cf-btn" onclick="filterCampus('college', this)">
+        Colleges 🏫
+      </button>
+      <button class="cf-btn" onclick="filterCampus('moments', this)">
+        Moments ✨
+      </button>
+    </div>
+
+    <!-- GRID -->
+    <section class="campus-grid-wrap">
+      <div class="campus-grid" id="campusGrid">
+        <!-- Skeletons while loading -->
+        <div class="cg-skeleton featured">
+          <div class="sk-img"></div>
+          <div class="sk-body">
+            <div class="sk-line"></div>
+            <div class="sk-line short"></div>
+          </div>
+        </div>
+        <div class="cg-skeleton">
+          <div class="sk-img"></div>
+          <div class="sk-body">
+            <div class="sk-line"></div>
+            <div class="sk-line short"></div>
+          </div>
+        </div>
+        <div class="cg-skeleton">
+          <div class="sk-img"></div>
+          <div class="sk-body">
+            <div class="sk-line"></div>
+            <div class="sk-line short"></div>
+          </div>
+        </div>
+        <div class="cg-skeleton">
+          <div class="sk-img"></div>
+          <div class="sk-body">
+            <div class="sk-line"></div>
+            <div class="sk-line short"></div>
+          </div>
+        </div>
+      </div>
+      <div class="campus-empty hidden" id="campusEmpty">
+        <div style="font-size: 3rem">📸</div>
+        <h3>No pics in this category yet!</h3>
+        <p>Admin is probably still loading the gallery. Check back soon! 😂</p>
+      </div>
+    </section>
+
+    <!-- PHOTO MODAL -->
+    <div class="modal-bg hidden" id="photoModal">
+      <div class="photo-modal-box">
+        <button class="photo-close" onclick="closeM('photoModal')">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="photo-modal-inner">
+          <div class="photo-modal-left">
+            <img
+              id="modalPhoto"
+              src=""
+              alt=""
+              class="modal-photo-img"
+              onerror="this.style.opacity = '0.3'"
+            />
+          </div>
+          <div class="photo-modal-right">
+            <div class="modal-photo-meta">
+              <div class="modal-photo-inst" id="modalInst"></div>
+              <div class="modal-photo-caption" id="modalCaption"></div>
+              <div class="modal-photo-cat" id="modalCat"></div>
+            </div>
+            <button
+              class="like-btn-modal"
+              id="modalLikeBtn"
+              onclick="toggleModalLike()"
+            >
+              <i class="fas fa-heart"></i>
+              <span id="modalLikeCount">0</span> Likes
+            </button>
+            <div>
+              <h4 class="modal-comments-h">Comments 💬</h4>
+              <div class="modal-comments-list" id="modalCommentsList"></div>
+              <div class="modal-comment-form">
+                <input
+                  type="text"
+                  id="modalCommentName"
+                  class="fi"
+                  placeholder="Your name..."
+                />
+                <textarea
+                  id="modalCommentText"
+                  class="fi"
+                  rows="2"
+                  placeholder="Drop a comment, no cap..."
+                ></textarea>
+                <button class="btn-sm-green" onclick="submitModalComment()">
+                  <i class="fas fa-paper-plane"></i> Send It
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="brand" style="justify-content: center; margin-bottom: 10px">
+        <span>💾</span>Save<span class="g">4</span>Save
+      </div>
+      <p style="color: var(--muted); font-size: 0.87rem; margin-bottom: 14px">
+        Kenya Is Beautiful — No Cap. 🇰🇪💚
+      </p>
+      <div class="flinks">
+        <a href="index.html">Save</a><a href="about.html">About</a
+        ><a href="terms.html">Terms</a><a href="admin.html">Admin</a>
+      </div>
+      <p class="fcopy">© 2025 Save4Save — All Rights Reserved. 🎓</p>
+    </footer>
+
+    <div class="toast hidden" id="toast"></div>
+    <script src="app.js"></script>
+    <script>
+      // Enhanced renderCampusGrid override for featured card + badges
+      document.addEventListener("DOMContentLoaded", function () {
+        loadCampusPage();
+      });
+
+      // Override renderCampusGrid for this page's enhanced layout
+      const _origRender = window.renderCampusGrid;
+      window.renderCampusGrid = function (cat) {
+        const photos = getAllCampusPhotos();
+        const campusPhotos = photos.filter(
+          (p) => p.target === "campus" || p.target === "both",
+        );
+        const filtered =
+          cat === "all"
+            ? campusPhotos
+            : campusPhotos.filter((p) => p.cat === cat);
+
+        const grid = document.getElementById("campusGrid");
+        const empty = document.getElementById("campusEmpty");
+        if (!grid) return;
+
+        if (!filtered.length) {
+          grid.innerHTML = "";
+          empty?.classList.remove("hidden");
+          return;
+        }
+        empty?.classList.add("hidden");
+
+        grid.innerHTML = filtered
+          .map((p, i) => {
+            const liked = isLiked(p.id);
+            const isFeatured = i === 0 ? "featured" : "";
+            return `<div class="cg-card ${isFeatured}" onclick="openPhotoModal('${p.id}')">
+      <div class="cg-img-wrap">
+        <img src="${p.src}" alt="${p.inst}" loading="lazy" onerror="this.style.opacity='0.2';this.style.filter='grayscale(1)'">
+        <span class="kenya-badge">🇰🇪 ${p.inst.split("(")[0].trim()}</span>
+        <span class="like-overlay"><i class="fas fa-heart"></i>${p.likes || 0}</span>
+      </div>
+      <div class="cg-body">
+        <div class="cg-inst">${p.inst}</div>
+        <div class="cg-caption">${p.caption || ""}</div>
+        <div class="cg-foot">
+          <span class="cg-cat">${catLabel(p.cat)}</span>
+          <button class="like-btn ${liked ? "liked" : ""}" onclick="event.stopPropagation();toggleLike('${p.id}',this)">
+            <i class="fas fa-heart"></i> <span>${p.likes || 0}</span>
+          </button>
+        </div>
+      </div>
+    </div>`;
+          })
+          .join("");
+
+        updateCampusStats();
+      };
+    </script>
+  </body>
+</html>

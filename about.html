@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+    <meta name="theme-color" content="#0a0a0f" />
+    <title>About Me 🧑‍🎓 | Save4Save</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="about-page-bg"></div>
+    <div class="noise"></div>
+    <div class="blobs">
+      <div class="bl bl1"></div>
+      <div class="bl bl2"></div>
+      <div class="bl bl3"></div>
+    </div>
+
+    <nav class="navbar">
+      <a href="index.html" class="brand"
+        ><span>💾</span>Save<span class="g">4</span>Save</a
+      >
+      <div class="navlinks" id="navLinks">
+        <a href="index.html" class="nl">Save 💾</a>
+        <a href="about.html" class="nl active">About Me 🧑‍🎓</a>
+        <a href="campus.html" class="nl">Campus Vibes 🎓</a>
+        <a href="terms.html" class="nl">Terms 📜</a>
+        <a href="admin.html" class="nl admin-pill">Admin 🔐</a>
+      </div>
+      <button class="ham" onclick="toggleNav()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+
+    <!-- HERO PROFILE -->
+    <section class="about-hero">
+      <div class="about-hero-bg"></div>
+      <div class="about-hero-content">
+        <div class="profile-ava-big" id="profileAvaBig">
+          <img
+            src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+            id="profileAvaImg"
+            alt="Admin"
+            style="
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+              border-radius: 50%;
+              display: none;
+            "
+          /><span id="profileAvaEmoji">👑</span>
+        </div>
+        <div class="profile-hero-info">
+          <div class="profile-tag">🎓 Karatina University Student</div>
+          <h1 class="profile-name" id="profileHeroName">Save4Save Admin</h1>
+          <div class="profile-meta-row">
+            <span class="pmeta"
+              ><i class="fas fa-map-marker-alt"></i> Karatina University, Nyeri
+              County</span
+            >
+            <span class="pmeta"
+              ><i class="fab fa-whatsapp"></i> +254 738 026 731</span
+            >
+          </div>
+          <div class="profile-bio-text" id="profileHeroBio">
+            Building Kenya's biggest student contact network — no cap fr fr. 💯
+          </div>
+          <div class="profile-hero-btns">
+            <a href="https://wa.me/254738026731" target="_blank" class="btn-wa"
+              ><i class="fab fa-whatsapp"></i> Hit My Line</a
+            >
+            <a
+              href="https://chat.whatsapp.com/Lku4EybnDOw4VTxQqYb6nT?mode=gi_t"
+              target="_blank"
+              class="btn-ghost"
+              >Join My Group 📲</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT TABS -->
+    <section class="about-section">
+      <div class="about-tabs">
+        <button class="atab active" onclick="switchAboutTab('info', this)">
+          📋 Profile &amp; Info
+        </button>
+        <button class="atab" onclick="switchAboutTab('experience', this)">
+          💼 Experience
+        </button>
+        <button class="atab" onclick="switchAboutTab('gallery', this)">
+          📸 My Gallery
+        </button>
+      </div>
+
+      <!-- INFO TAB -->
+      <div class="atab-panel" id="tab-info">
+        <div class="info-grid">
+          <div class="info-card-big">
+            <div class="icb-header">
+              <span class="icb-icon">🧑‍🎓</span>
+              <h3>About This Guy, No Cap</h3>
+            </div>
+            <p id="aboutBioText">
+              What's good fam! I'm a student at Karatina University, lowkey one
+              of the most underrated universities in Kenya fr fr. I built
+              Save4Save because I got tired of manually sharing WhatsApp numbers
+              with the whole squad — deadass there had to be a better way. So I
+              built it myself. Now the whole network runs through this platform.
+              If you're reading this, you're already part of the vibe. Welcome
+              bestie! 🙏🔥
+            </p>
+            <div class="about-chips">
+              <span class="chip chip-green">🎓 Karatina University</span>
+              <span class="chip chip-blue">📍 Nyeri County, Kenya</span>
+              <span class="chip chip-yellow">🌐 Network Builder</span>
+              <span class="chip chip-pink">💻 Tech Enthusiast</span>
+            </div>
+          </div>
+          <div class="side-cards">
+            <div class="side-card">
+              <div class="sc-icon">🏛️</div>
+              <div>
+                <div class="sc-label">Institution</div>
+                <div class="sc-val" id="adminInstDisplay">
+                  Karatina University
+                </div>
+              </div>
+            </div>
+            <div class="side-card">
+              <div class="sc-icon">📚</div>
+              <div>
+                <div class="sc-label">Course</div>
+                <div class="sc-val" id="adminCourseDisplay">Loading...</div>
+              </div>
+            </div>
+            <div class="side-card">
+              <div class="sc-icon">📅</div>
+              <div>
+                <div class="sc-label">Year</div>
+                <div class="sc-val" id="adminYearDisplay">Loading...</div>
+              </div>
+            </div>
+            <div class="side-card">
+              <div class="sc-icon">👥</div>
+              <div>
+                <div class="sc-label">Network Size</div>
+                <div class="sc-val" id="networkSizeDisplay">0 contacts</div>
+              </div>
+            </div>
+            <div class="side-card">
+              <div class="sc-icon">📱</div>
+              <div>
+                <div class="sc-label">WhatsApp</div>
+                <div class="sc-val">+254 738 026 731</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Karatina University Spotlight -->
+        <div class="uni-spotlight">
+          <div class="uni-spot-img">
+            <img
+              src="https://images.unsplash.com/photo-1562774053-701939374585?w=700&q=80"
+              alt="Karatina University Campus"
+              onerror="this.style.display = 'none'"
+            />
+            <div class="uni-spot-overlay">
+              <span class="uni-spot-name">🏛️ Karatina University</span>
+            </div>
+          </div>
+          <div class="uni-spot-info">
+            <h3>
+              Karatina University — <span class="gtext">The Real Deal</span>
+            </h3>
+            <p>
+              Located in Karatina Town, Nyeri County, right in the heart of Mt.
+              Kenya region. Karatina University is that hidden gem fr fr —
+              beautiful campus, tight community, and students who actually
+              grind. Founded in 2013, now producing some of Kenya's finest
+              graduates across multiple disciplines. No cap, it's bussin over
+              here! 🏔️🔥
+            </p>
+            <div class="uni-facts">
+              <div class="uni-fact">
+                <span class="uf-num">2013</span
+                ><span class="uf-label">Founded</span>
+              </div>
+              <div class="uni-fact">
+                <span class="uf-num">Nyeri</span
+                ><span class="uf-label">County</span>
+              </div>
+              <div class="uni-fact">
+                <span class="uf-num">ISO</span
+                ><span class="uf-label">Certified</span>
+              </div>
+              <div class="uni-fact">
+                <span class="uf-num">🏔️</span
+                ><span class="uf-label">Mt Kenya</span>
+              </div>
+            </div>
+            <a
+              href="https://www.karu.ac.ke"
+              target="_blank"
+              class="btn-sm-green"
+              >Visit Karatina University 🌐</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- EXPERIENCE TAB -->
+      <div class="atab-panel hidden" id="tab-experience">
+        <h2 class="tab-section-h">Experience &amp; Skills 💼</h2>
+        <p class="tab-section-p">
+          The grind doesn't stop, bestie. Here's what I bring to the table fr
+          fr. 🔥
+        </p>
+        <div class="exp-timeline" id="expTimeline"></div>
+        <div class="skills-section">
+          <h3 class="skills-h">Skills &amp; Strengths 💪</h3>
+          <div class="skills-grid" id="skillsGrid"></div>
+        </div>
+      </div>
+
+      <!-- GALLERY TAB -->
+      <div class="atab-panel hidden" id="tab-gallery">
+        <div class="gallery-header">
+          <h2 class="tab-section-h">My Gallery 📸</h2>
+          <p class="tab-section-p">
+            Moments captured, vibes locked in. Admin adds pics from the admin
+            panel. 🔥
+          </p>
+        </div>
+        <div class="gallery-grid" id="aboutGallery">
+          <div class="gallery-empty" id="galleryEmpty">
+            <div style="font-size: 3rem">📸</div>
+            <p>
+              No pics yet bestie — admin hasn't uploaded anything yet. 😅<br />Check
+              back soon fr fr!
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="brand" style="justify-content: center; margin-bottom: 10px">
+        <span>💾</span>Save<span class="g">4</span>Save
+      </div>
+      <p style="color: var(--muted); font-size: 0.87rem; margin-bottom: 16px">
+        Made with 💚 by a proud Karatina University Student
+      </p>
+      <div class="flinks">
+        <a href="index.html">Save Contacts</a
+        ><a href="campus.html">Campus Vibes</a><a href="terms.html">Terms</a
+        ><a href="admin.html">Admin</a>
+      </div>
+      <p class="fcopy">© 2025 Save4Save — All Rights Reserved. 🎓</p>
+    </footer>
+
+    <div class="toast hidden" id="toast"></div>
+    <script src="app.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => loadAboutPage());
+    </script>
+  </body>
+</html>
