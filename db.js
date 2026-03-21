@@ -5,7 +5,8 @@
    ============================================================ */
 
 const SUPABASE_URL = "https://brmtdvfrucgbctffuajr.supabase.co";
-const SUPABASE_KEY = "sb_publishable_xxycvTWr59G3koPLgGXTIw_zhvuFy7T";
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJybXRkdmZydWNnYmN0ZmZ1YWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNDQwNzQsImV4cCI6MjA4OTYyMDA3NH0.GAlYICHhUKjysRpvEIz3fOfeGCWMhg9s57SXcTTHrX4";
 
 // ---- SUPABASE CLIENT ----
 const _supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
