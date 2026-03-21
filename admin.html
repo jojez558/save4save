@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width,initial-scale=1.0,maximum-scale=1.0"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
     />
     <title>Admin Panel 🔐 | Save4Save</title>
     <link rel="stylesheet" href="style.css" />
@@ -16,24 +16,28 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-    <!-- Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script src="db.js"></script>
   </head>
   <body>
-    <!-- DB TEST BANNER -->
+    <div class="noise"></div>
+    <div class="blobs">
+      <div class="bl bl1"></div>
+      <div class="bl bl2"></div>
+      <div class="bl bl3"></div>
+    </div>
+
+    <!-- DB STATUS BAR -->
     <div
-      id="dbTestBanner"
+      id="dbBar"
       style="
         background: #1a1a2e;
-        padding: 12px;
+        padding: 10px;
         text-align: center;
         font-family: monospace;
-        font-size: 13px;
-        border-bottom: 1px solid #333;
+        font-size: 12px;
+        color: #aaa;
       "
     >
-      <span id="dbTestMsg">⏳ Testing database connection...</span>
+      ⏳ Connecting to database...
       <button
         onclick="testDB()"
         style="
@@ -41,37 +45,34 @@
           background: #25d366;
           color: #000;
           border: none;
-          padding: 4px 12px;
-          border-radius: 6px;
+          padding: 3px 10px;
+          border-radius: 5px;
           cursor: pointer;
           font-weight: bold;
+          font-size: 11px;
         "
       >
-        Test DB
+        Test
       </button>
       <button
         onclick="migrateToSupabase()"
         style="
-          margin-left: 8px;
+          margin-left: 4px;
           background: #7c3aed;
           color: #fff;
           border: none;
-          padding: 4px 12px;
-          border-radius: 6px;
+          padding: 3px 10px;
+          border-radius: 5px;
           cursor: pointer;
           font-weight: bold;
+          font-size: 11px;
         "
       >
-        ☁️ Migrate Local → Cloud
+        ☁️ Migrate
       </button>
     </div>
 
-    <div class="noise"></div>
-    <div class="blobs">
-      <div class="bl bl1"></div>
-      <div class="bl bl2"></div>
-      <div class="bl bl3"></div>
-    </div>
+    <!-- LOGIN -->
     <div class="login-screen" id="loginScreen">
       <div class="login-card">
         <div style="font-size: 3rem; text-align: center; margin-bottom: 10px">
@@ -113,6 +114,8 @@
         >
       </div>
     </div>
+
+    <!-- ADMIN DASHBOARD -->
     <div class="admin-dash hidden" id="adminDash">
       <nav class="navbar">
         <a href="index.html" class="brand"
@@ -158,6 +161,7 @@
           🔑 Security
         </button>
       </div>
+
       <!-- CONTACTS TAB -->
       <div class="admin-tab-panel" id="adt-contacts">
         <div class="contacts-toolbar">
@@ -213,6 +217,7 @@
           </div>
         </div>
       </div>
+
       <!-- PROFILE TAB -->
       <div class="admin-tab-panel hidden" id="adt-profile">
         <h2
@@ -225,7 +230,7 @@
           Edit My Profile 👤
         </h2>
         <p style="color: var(--muted); margin-bottom: 22px; font-size: 0.87rem">
-          This shows on the About Me page for everyone. Make it bussin! 🔥
+          This shows on the About Me page. Make it bussin! 🔥
         </p>
         <div class="form-card">
           <div
@@ -365,6 +370,7 @@
           style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px"
         ></div>
       </div>
+
       <!-- ADD PHOTOS TAB -->
       <div class="admin-tab-panel hidden" id="adt-addphoto">
         <h2
@@ -377,8 +383,7 @@
           Add Campus Photos 📸
         </h2>
         <p style="color: var(--muted); margin-bottom: 22px; font-size: 0.87rem">
-          Upload photos for Campus Vibes & About Me gallery. Kenya is beautiful
-          — show it off! 🇰🇪
+          Upload photos for Campus Vibes & About Me gallery. 🇰🇪
         </p>
         <div class="form-card">
           <div
@@ -461,6 +466,7 @@
           </div>
         </div>
       </div>
+
       <!-- SECURITY TAB -->
       <div class="admin-tab-panel hidden" id="adt-security">
         <h2
@@ -558,6 +564,8 @@
         </div>
       </div>
     </div>
+
+    <!-- DELETE MODAL -->
     <div class="modal-bg hidden" id="delModal">
       <div class="modal-box">
         <div class="modal-emoji">⚠️</div>
@@ -573,70 +581,51 @@
         </div>
       </div>
     </div>
+
     <div class="toast hidden" id="toast"></div>
+
+    <!-- SCRIPTS — load order matters! -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="db.js"></script>
     <script src="app.js"></script>
     <script>
-      // Check database connection on load
-      document.addEventListener("DOMContentLoaded", async () => {
-        const statusEl = document.getElementById("dbStatus");
-        const dotEl = document.getElementById("dbStatusDot");
-        const textEl = document.getElementById("dbStatusText");
-        if (statusEl) statusEl.style.display = "block";
-        try {
-          const ok = await db_ping();
-          if (ok) {
-            if (dotEl) dotEl.style.background = "#25d366";
-            if (textEl)
-              textEl.textContent =
-                "☁️ Database connected — data syncs across all devices";
-          } else {
-            if (textEl)
-              textEl.textContent = "⚠️ Database offline — using local storage";
-          }
-        } catch (e) {
-          if (textEl)
-            textEl.textContent = "⚠️ Database offline — using local storage";
-        }
-      });
-    </script>
-
-    <script>
-      // Using _supa from db.js
-
+      // DB test & migrate helpers
       async function testDB() {
-        const msg = document.getElementById("dbTestMsg");
-        msg.textContent = "⏳ Testing...";
-        msg.style.color = "#fff";
+        const bar = document.getElementById("dbBar");
+        bar.innerHTML =
+          '⏳ Testing... <button onclick="testDB()" style="margin-left:8px;background:#25d366;color:#000;border:none;padding:3px 10px;border-radius:5px;cursor:pointer;font-weight:bold;font-size:11px;">Test</button><button onclick="migrateToSupabase()" style="margin-left:4px;background:#7c3aed;color:#fff;border:none;padding:3px 10px;border-radius:5px;cursor:pointer;font-weight:bold;font-size:11px;">☁️ Migrate</button>';
         try {
           const { data, error } = await _supa.from("contacts").select("id");
+          const local = JSON.parse(
+            localStorage.getItem("s4s_contacts") || "[]",
+          ).length;
           if (error) {
-            msg.innerHTML = "❌ DB Error: " + error.message;
-            msg.style.color = "#ef4444";
+            bar.innerHTML = "❌ DB Error: " + error.message;
+            bar.style.color = "#ef4444";
           } else {
-            msg.innerHTML =
-              "✅ Connected! Contacts in Supabase: " +
+            bar.innerHTML =
+              "✅ DB Connected! Cloud: " +
               (data ? data.length : 0) +
-              " | Local: " +
-              JSON.parse(localStorage.getItem("s4s_contacts") || "[]").length;
-            msg.style.color = "#25d366";
+              " contacts | Local: " +
+              local +
+              ' <button onclick="testDB()" style="margin-left:8px;background:#25d366;color:#000;border:none;padding:3px 10px;border-radius:5px;cursor:pointer;font-size:11px;">Refresh</button><button onclick="migrateToSupabase()" style="margin-left:4px;background:#7c3aed;color:#fff;border:none;padding:3px 10px;border-radius:5px;cursor:pointer;font-size:11px;">☁️ Migrate</button>';
+            bar.style.color = "#25d366";
           }
         } catch (e) {
-          msg.innerHTML = "❌ Exception: " + e.message;
-          msg.style.color = "#ef4444";
+          bar.innerHTML = "❌ " + e.message;
+          bar.style.color = "#ef4444";
         }
       }
 
       async function migrateToSupabase() {
-        const msg = document.getElementById("dbTestMsg");
-        msg.textContent = "⏳ Migrating...";
-        msg.style.color = "#fbbf24";
-
+        const bar = document.getElementById("dbBar");
+        bar.innerHTML = "⏳ Migrating local contacts to cloud...";
+        bar.style.color = "#fbbf24";
         const local = JSON.parse(localStorage.getItem("s4s_contacts") || "[]");
         if (!local.length) {
-          msg.textContent = "⚠️ No local contacts to migrate!";
+          bar.innerHTML = "⚠️ No local contacts to migrate!";
           return;
         }
-
         let ok = 0,
           fail = 0;
         for (const c of local) {
@@ -661,17 +650,19 @@
             fail++;
           }
         }
-
-        msg.innerHTML =
+        bar.innerHTML =
           "✅ Migrated " +
           ok +
-          " contacts to Supabase! " +
-          (fail ? "❌ " + fail + " failed" : "");
-        msg.style.color = ok > 0 ? "#25d366" : "#ef4444";
-        setTimeout(testDB, 1000);
+          " contacts! " +
+          (fail ? "❌ " + fail + " failed" : "All good fr fr 🔥");
+        bar.style.color = ok > 0 ? "#25d366" : "#ef4444";
+        setTimeout(testDB, 2000);
       }
 
-      window.addEventListener("load", () => setTimeout(testDB, 1500));
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(testDB, 1000);
+        initAdminPage();
+      });
     </script>
   </body>
 </html>
