@@ -21,6 +21,36 @@
     <script src="db.js"></script>
   </head>
   <body>
+    <!-- DB TEST BANNER -->
+    <div
+      id="dbTestBanner"
+      style="
+        background: #1a1a2e;
+        padding: 12px;
+        text-align: center;
+        font-family: monospace;
+        font-size: 13px;
+        border-bottom: 1px solid #333;
+      "
+    >
+      <span id="dbTestMsg">⏳ Testing database connection...</span>
+      <button
+        onclick="testDB()"
+        style="
+          margin-left: 12px;
+          background: #25d366;
+          color: #000;
+          border: none;
+          padding: 4px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: bold;
+        "
+      >
+        Test Again
+      </button>
+    </div>
+
     <div class="noise"></div>
     <div class="blobs">
       <div class="bl bl1"></div>
@@ -553,6 +583,38 @@
             textEl.textContent = "⚠️ Database offline — using local storage";
         }
       });
+    </script>
+
+    <script>
+      async function testDB() {
+        const msg = document.getElementById("dbTestMsg");
+        msg.textContent = "⏳ Testing...";
+        try {
+          const { data, error } = await window.supabase
+            .createClient(
+              "https://brmtdvfrucgbctffuajr.supabase.co",
+              "sb_publishable_xxycvTWr59G3koPLgGXTIw_zhvuFy7T",
+              { auth: { persistSession: false } },
+            )
+            .from("contacts")
+            .select("id")
+            .limit(1);
+          if (error) {
+            msg.innerHTML = "❌ DB Error: " + error.message;
+            msg.style.color = "#ef4444";
+          } else {
+            msg.innerHTML =
+              "✅ Database connected! Contacts in DB: " +
+              (data ? data.length : 0);
+            msg.style.color = "#25d366";
+          }
+        } catch (e) {
+          msg.innerHTML = "❌ Exception: " + e.message;
+          msg.style.color = "#ef4444";
+        }
+      }
+      // Auto test on load
+      window.addEventListener("load", () => setTimeout(testDB, 1500));
     </script>
   </body>
 </html>
