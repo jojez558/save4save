@@ -16,6 +16,9 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="db.js"></script>
   </head>
   <body>
     <div class="noise"></div>
@@ -527,5 +530,29 @@
     </div>
     <div class="toast hidden" id="toast"></div>
     <script src="app.js"></script>
+    <script>
+      // Check database connection on load
+      document.addEventListener("DOMContentLoaded", async () => {
+        const statusEl = document.getElementById("dbStatus");
+        const dotEl = document.getElementById("dbStatusDot");
+        const textEl = document.getElementById("dbStatusText");
+        if (statusEl) statusEl.style.display = "block";
+        try {
+          const ok = await db_ping();
+          if (ok) {
+            if (dotEl) dotEl.style.background = "#25d366";
+            if (textEl)
+              textEl.textContent =
+                "☁️ Database connected — data syncs across all devices";
+          } else {
+            if (textEl)
+              textEl.textContent = "⚠️ Database offline — using local storage";
+          }
+        } catch (e) {
+          if (textEl)
+            textEl.textContent = "⚠️ Database offline — using local storage";
+        }
+      });
+    </script>
   </body>
 </html>
