@@ -37,7 +37,7 @@
       <button
         onclick="testDB()"
         style="
-          margin-left: 12px;
+          margin-left: 8px;
           background: #25d366;
           color: #000;
           border: none;
@@ -47,7 +47,22 @@
           font-weight: bold;
         "
       >
-        Test Again
+        Test DB
+      </button>
+      <button
+        onclick="migrateToSupabase()"
+        style="
+          margin-left: 8px;
+          background: #7c3aed;
+          color: #fff;
+          border: none;
+          padding: 4px 12px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: bold;
+        "
+      >
+        ☁️ Migrate Local → Cloud
       </button>
     </div>
 
@@ -586,26 +601,29 @@
     </script>
 
     <script>
+      const _testClient = window.supabase.createClient(
+        "https://brmtdvfrucgbctffuajr.supabase.co",
+        "sb_publishable_xxycvTWr59G3koPLgGXTIw_zhvuFy7T",
+        { auth: { persistSession: false } },
+      );
+
       async function testDB() {
         const msg = document.getElementById("dbTestMsg");
         msg.textContent = "⏳ Testing...";
+        msg.style.color = "#fff";
         try {
-          const { data, error } = await window.supabase
-            .createClient(
-              "https://brmtdvfrucgbctffuajr.supabase.co",
-              "sb_publishable_xxycvTWr59G3koPLgGXTIw_zhvuFy7T",
-              { auth: { persistSession: false } },
-            )
+          const { data, error } = await _testClient
             .from("contacts")
-            .select("id")
-            .limit(1);
+            .select("id");
           if (error) {
             msg.innerHTML = "❌ DB Error: " + error.message;
             msg.style.color = "#ef4444";
           } else {
             msg.innerHTML =
-              "✅ Database connected! Contacts in DB: " +
-              (data ? data.length : 0);
+              "✅ Connected! Contacts in Supabase: " +
+              (data ? data.length : 0) +
+              " | Local: " +
+              JSON.parse(localStorage.getItem("s4s_contacts") || "[]").length;
             msg.style.color = "#25d366";
           }
         } catch (e) {
@@ -613,7 +631,52 @@
           msg.style.color = "#ef4444";
         }
       }
-      // Auto test on load
+
+      async function migrateToSupabase() {
+        const msg = document.getElementById("dbTestMsg");
+        msg.textContent = "⏳ Migrating...";
+        msg.style.color = "#fbbf24";
+
+        const local = JSON.parse(localStorage.getItem("s4s_contacts") || "[]");
+        if (!local.length) {
+          msg.textContent = "⚠️ No local contacts to migrate!";
+          return;
+        }
+
+        let ok = 0,
+          fail = 0;
+        for (const c of local) {
+          try {
+            const { error } = await _testClient.from("contacts").upsert([
+              {
+                id: c.id || Date.now().toString(),
+                name: c.name,
+                phone: c.phone,
+                institution: c.inst || c.institution,
+                course: c.course,
+                year: c.year,
+                bio: c.bio,
+                photo: c.photo || null,
+              },
+            ]);
+            if (error) {
+              console.error(error);
+              fail++;
+            } else ok++;
+          } catch (e) {
+            fail++;
+          }
+        }
+
+        msg.innerHTML =
+          "✅ Migrated " +
+          ok +
+          " contacts to Supabase! " +
+          (fail ? "❌ " + fail + " failed" : "");
+        msg.style.color = ok > 0 ? "#25d366" : "#ef4444";
+        setTimeout(testDB, 1000);
+      }
+
       window.addEventListener("load", () => setTimeout(testDB, 1500));
     </script>
   </body>
