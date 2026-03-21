@@ -288,7 +288,7 @@ function showAdminDash(){
   loadAdminPhotosGrid();
 }
 
-function updateAdminStats(){
+async function updateAdminStats(){
   const contacts = await db_getContacts();
   const photos   = await db_getPhotos();
   const waCount  = contacts.filter(c=>c.phone).length;
@@ -310,7 +310,7 @@ function switchAdminTab(tab, btn){
 }
 
 // ---- CONTACTS TABLE ----
-async function loadContactsTable(){
+async async function loadContactsTable(){
   const contacts = await db_getContacts();
   const tbody = document.getElementById('ctbody');
   const empty = document.getElementById('emptyTbl');
@@ -344,7 +344,7 @@ function renderContactRows(contacts, tbody){
     </tr>`).join('');
 }
 
-function filterContacts(){
+async function filterContacts(){
   const q = document.getElementById('srch')?.value.toLowerCase().trim();
   const contacts = ls_get(CONTACTS_KEY)||[];
   const filtered = q ? contacts.filter(c=>(c.name||'').toLowerCase().includes(q)||(c.phone||'').includes(q)) : contacts;
@@ -362,7 +362,7 @@ function confirmDelete(id){
   openM('delModal');
 }
 
-function doDelete(){
+async function doDelete(){
   let contacts = ls_get(CONTACTS_KEY)||[];
   contacts = contacts.filter(c=>c.id !== _delId);
   ls_set(CONTACTS_KEY, contacts);
@@ -372,7 +372,7 @@ function doDelete(){
   showToast('🗑️ Contact deleted fr fr.');
 }
 
-async function dlOneVCF(id){
+async async function dlOneVCF(id){
   const contacts = await db_getContacts();
   const c = contacts.find(x=>x.id===id);
   if(!c){ showToast('❌ Contact not found!'); return; }
@@ -380,7 +380,7 @@ async function dlOneVCF(id){
   showToast(`📥 Downloaded VCF for ${c.name}`);
 }
 
-async function dlAllVCF(){
+async async function dlAllVCF(){
   const contacts = await db_getContacts();
   if(!contacts.length){ showToast('😅 No contacts yet!'); return; }
   const all = contacts.map(buildVCF).join('\r\n');
@@ -421,7 +421,7 @@ function handleProfilePic(e){
   reader.readAsDataURL(file);
 }
 
-async function saveAdminProfile(){
+async async function saveAdminProfile(){
   const fi=id=>document.getElementById(id);
   const p={
     name:   fi('adminName')?.value.trim()||'George M.',
@@ -514,7 +514,7 @@ function handlePhotoUpload(e){
   reader.readAsDataURL(file);
 }
 
-async function uploadPhoto(){
+async async function uploadPhoto(){
   if(!_uploadPhotoData){ showToast('❌ Pick a photo first!'); return; }
   const inst    = document.getElementById('photoInst')?.value.trim()||'Karatina University';
   const caption = document.getElementById('photoCaption')?.value.trim()||'';
@@ -566,7 +566,7 @@ function loadAdminPhotosGrid(){
     </div>`).join('');
 }
 
-async function deletePhoto(id){
+async async function deletePhoto(id){
   await db_deletePhoto(id);
   loadAdminPhotosGrid();
   updateAdminStats();
@@ -817,7 +817,7 @@ function getDefaultPhotos(){ return DEFAULT_CAMPUS_PHOTOS; }
 // ============================================================
 //  CAMPUS PAGE
 // ============================================================
-async function loadCampusPage(){
+async async function loadCampusPage(){
   renderCampusGrid('all');
   updateCampusStats();
 }
@@ -896,7 +896,7 @@ function isLiked(id){
   return liked.includes(id);
 }
 
-async function toggleLike(id, btn){
+async async function toggleLike(id, btn){
   const photos=await db_getPhotos();
   const idx=photos.findIndex(p=>p.id===id);
   if(idx===-1) return;
@@ -1024,7 +1024,7 @@ const DEFAULT_EXPERIENCE = [
   {role:'Community Builder',       org:'Kenyan Student Networks',            dur:'2023 – Present'}
 ];
 
-async function loadAboutPage(){
+async async function loadAboutPage(){
   // Load profile from Supabase or fall back to localStorage
   const dbProfile = await db_getAdminProfile();
   const p     = dbProfile || ls_get(ADMIN_PROF_KEY) || {};

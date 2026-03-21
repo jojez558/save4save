@@ -19,6 +19,7 @@
     <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="db.js"></script>
+    <script src="app.js"></script>
   </head>
   <body>
     <!-- DB TEST BANNER -->
@@ -601,20 +602,14 @@
     </script>
 
     <script>
-      const _testClient = window.supabase.createClient(
-        "https://brmtdvfrucgbctffuajr.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJybXRkdmZydWNnYmN0ZmZ1YWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNDQwNzQsImV4cCI6MjA4OTYyMDA3NH0.GAlYICHhUKjysRpvEIz3fOfeGCWMhg9s57SXcTTHrX4",
-        { auth: { persistSession: false } },
-      );
+      // Using _supa from db.js
 
       async function testDB() {
         const msg = document.getElementById("dbTestMsg");
         msg.textContent = "⏳ Testing...";
         msg.style.color = "#fff";
         try {
-          const { data, error } = await _testClient
-            .from("contacts")
-            .select("id");
+          const { data, error } = await _supa.from("contacts").select("id");
           if (error) {
             msg.innerHTML = "❌ DB Error: " + error.message;
             msg.style.color = "#ef4444";
@@ -647,7 +642,7 @@
           fail = 0;
         for (const c of local) {
           try {
-            const { error } = await _testClient.from("contacts").upsert([
+            const { error } = await _supa.from("contacts").upsert([
               {
                 id: c.id || Date.now().toString(),
                 name: c.name,
