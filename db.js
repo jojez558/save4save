@@ -8,7 +8,9 @@ const SUPABASE_URL = "https://brmtdvfrucgbctffuajr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_xxycvTWr59G3koPLgGXTIw_zhvuFy7T";
 
 // ---- SUPABASE CLIENT ----
-const _supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const _supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: false },
+});
 
 // ---- CONTACTS ----
 
