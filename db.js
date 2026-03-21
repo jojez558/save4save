@@ -1,8 +1,25 @@
 /* ============================================================
    SAVE4SAVE — db.js
    Supabase database integration
-   Replaces localStorage for contacts, photos, admin profile
    ============================================================ */
+
+// Standalone helpers (don't depend on app.js)
+function _ls_get(k) {
+  try {
+    return JSON.parse(localStorage.getItem(k));
+  } catch (e) {
+    return null;
+  }
+}
+function _ls_set(k, v) {
+  try {
+    localStorage.setItem(k, JSON.stringify(v));
+  } catch (e) {}
+}
+function _toast(msg) {
+  if (typeof showToast === "function") _toast(msg);
+  else console.warn(msg);
+}
 
 const SUPABASE_URL = "https://brmtdvfrucgbctffuajr.supabase.co";
 const SUPABASE_KEY =
@@ -25,7 +42,7 @@ async function db_getContacts() {
     return data || [];
   } catch (e) {
     console.error("db_getContacts:", e);
-    return ls_get(CONTACTS_KEY) || [];
+    return _ls_get("s4s_contacts") || [];
   }
 }
 
@@ -45,17 +62,17 @@ async function db_addContact(contact) {
     ]);
     if (error) throw error;
     // also keep local copy for offline
-    const local = ls_get(CONTACTS_KEY) || [];
+    const local = _ls_get("s4s_contacts") || [];
     local.push(contact);
-    ls_set(CONTACTS_KEY, local);
+    _ls_set("s4s_contacts", local);
     return true;
   } catch (e) {
     console.error("db_addContact:", e);
     // fallback to localStorage
-    const local = ls_get(CONTACTS_KEY) || [];
+    const local = _ls_get("s4s_contacts") || [];
     local.push(contact);
-    ls_set(CONTACTS_KEY, local);
-    showToast("⚠️ Saved locally — database offline");
+    _ls_set("s4s_contacts", local);
+    _toast("⚠️ Saved locally — database offline");
     return false;
   }
 }
@@ -65,15 +82,15 @@ async function db_deleteContact(id) {
     const { error } = await _supa.from("contacts").delete().eq("id", id);
     if (error) throw error;
     // remove from local too
-    let local = ls_get(CONTACTS_KEY) || [];
+    let local = _ls_get("s4s_contacts") || [];
     local = local.filter((c) => c.id !== id);
-    ls_set(CONTACTS_KEY, local);
+    _ls_set("s4s_contacts", local);
     return true;
   } catch (e) {
     console.error("db_deleteContact:", e);
-    let local = ls_get(CONTACTS_KEY) || [];
+    let local = _ls_get("s4s_contacts") || [];
     local = local.filter((c) => c.id !== id);
-    ls_set(CONTACTS_KEY, local);
+    _ls_set("s4s_contacts", local);
     return false;
   }
 }
@@ -89,7 +106,7 @@ async function db_checkDuplicate(phone) {
     return data && data.length > 0;
   } catch (e) {
     // fallback: check local
-    const local = ls_get(CONTACTS_KEY) || [];
+    const local = _ls_get("s4s_contacts") || [];
     return local.some((c) => c.phone === phone);
   }
 }
@@ -120,7 +137,7 @@ async function db_getPhotos() {
     }));
   } catch (e) {
     console.error("db_getPhotos:", e);
-    return ls_get(PHOTOS_KEY) || [];
+    return _ls_get("s4s_photos") || [];
   }
 }
 
@@ -142,16 +159,16 @@ async function db_addPhoto(photo) {
       },
     ]);
     if (error) throw error;
-    const local = ls_get(PHOTOS_KEY) || [];
+    const local = _ls_get("s4s_photos") || [];
     local.unshift(photo);
-    ls_set(PHOTOS_KEY, local);
+    _ls_set("s4s_photos", local);
     return true;
   } catch (e) {
     console.error("db_addPhoto:", e);
-    const local = ls_get(PHOTOS_KEY) || [];
+    const local = _ls_get("s4s_photos") || [];
     local.unshift(photo);
-    ls_set(PHOTOS_KEY, local);
-    showToast("⚠️ Saved locally — database offline");
+    _ls_set("s4s_photos", local);
+    _toast("⚠️ Saved locally — database offline");
     return false;
   }
 }
@@ -160,14 +177,14 @@ async function db_deletePhoto(id) {
   try {
     const { error } = await _supa.from("campus_photos").delete().eq("id", id);
     if (error) throw error;
-    let local = ls_get(PHOTOS_KEY) || [];
+    let local = _ls_get("s4s_photos") || [];
     local = local.filter((p) => p.id !== id);
-    ls_set(PHOTOS_KEY, local);
+    _ls_set("s4s_photos", local);
     return true;
   } catch (e) {
-    let local = ls_get(PHOTOS_KEY) || [];
+    let local = _ls_get("s4s_photos") || [];
     local = local.filter((p) => p.id !== id);
-    ls_set(PHOTOS_KEY, local);
+    _ls_set("s4s_photos", local);
     return false;
   }
 }
@@ -210,7 +227,7 @@ async function db_getAdminProfile() {
       .eq("id", "admin")
       .single();
     if (error && error.code !== "PGRST116") throw error;
-    if (!data) return ls_get(ADMIN_PROF_KEY) || {};
+    if (!data) return _ls_get("s4s_adminProfile") || {};
     return {
       name: data.name,
       bio: data.bio,
@@ -223,7 +240,7 @@ async function db_getAdminProfile() {
     };
   } catch (e) {
     console.error("db_getAdminProfile:", e);
-    return ls_get(ADMIN_PROF_KEY) || {};
+    return _ls_get("s4s_adminProfile") || {};
   }
 }
 
@@ -244,12 +261,12 @@ async function db_saveAdminProfile(profile) {
       },
     ]);
     if (error) throw error;
-    ls_set(ADMIN_PROF_KEY, profile);
+    _ls_set("s4s_adminProfile", profile);
     return true;
   } catch (e) {
     console.error("db_saveAdminProfile:", e);
-    ls_set(ADMIN_PROF_KEY, profile);
-    showToast("⚠️ Saved locally — database offline");
+    _ls_set("s4s_adminProfile", profile);
+    _toast("⚠️ Saved locally — database offline");
     return false;
   }
 }
